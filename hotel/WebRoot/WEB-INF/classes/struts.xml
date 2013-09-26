@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.custom.i18n.resources" value="global"/>
+	<constant name="struts.custom.i18n.resources" value="messageResource"/>
+	<constant name="struts.configuration.xml.reload" value="true"/>
+    <!-- <constant name="struts.multipart.paeser" value="cos"></constant> 一个文件上传框架 -->
+      <!-- Make the Spring object factory the automatic default 
+      <constant name="struts.objectFactory" value="spring" /> 
+  	--> 
+  <package name="basicstruts2" extends="struts-default">
+  	
+  	<result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+    </result-types>
+  	<interceptors>
+		<interceptor-stack name="appDefaultStack">
+	    <interceptor-ref name="defaultStack">
+	     <param name="exception.logEnabled">true</param>
+	     <param name="exception.logLevel">ERROR</param>
+	    </interceptor-ref>
+	 	</interceptor-stack>
+ 	  
+	    <interceptor-stack name="myStack">  
+	        <interceptor-ref name="token"/>  
+	        <interceptor-ref name="tokenSession"/>  <!-- 低版本的token token-session -->
+	    	<!--  <interceptor-ref name="defaultStack" />  -->            
+	    </interceptor-stack>  
+	    <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor"/>
+    </interceptors>  
+    <default-interceptor-ref name="appDefaultStack" />
+    
+    <global-results>
+         <result name="securityerror">/global/securityerror.jsp</result>
+		 <result name="error">/global/error.jsp</result><!-- 标准错误页面 -->
+		 
+    </global-results>
+	<global-exception-mappings>
+	 <exception-mapping exception="org.apache.struts.register.exceptions.SecurityBreachException" result="securityerror" />
+	 <exception-mapping exception="java.lang.Exception" result="error" />
+   	</global-exception-mappings>
+ 	
+  	
+ 	<action name="user" class="com.hotel.action.UserAction" method="input">
+
+		<result name="input">/user/login.jsp</result>
+		<result name="success">/user/success.jsp</result>
+		<result name="admin" type="redirectAction">
+		 	<param name="actionName">admin</param>
+		 	<param name="method">index</param>
+		</result>
+		<result name="info">/user/setuser/info.jsp</result>
+		<result name="chginfo">/user/setuser/chginfo.jsp</result>
+		<result name="chgpwd">/user/setuser/chgpwd.jsp</result>
+        <result name="test">/user/test.jsp</result>
+			
+    </action>
+    
+    <action name="admin" class="com.hotel.action.adminAction" method="index">
+    	<result name="index">/admin/index.jsp</result>
+    </action>
+    
+    <action name="roomMgr" class="com.hotel.action.RoomMgrAction" method="index">
+    	<result name="index">/admin/roommgr.jsp</result>
+    	<result name="price">/admin/roompricemgr.jsp</result>
+    	<result name="success" type="json">
+               <param name="root">
+					json
+               </param>
+        </result>
+        <interceptor-ref name="defaultStack" />
+        <interceptor-ref name="json" />
+    </action>
+    
+    <action name="reserve" class="com.hotel.action.ReserveAction" method="index">
+    
+	   	<result name="index">/user/reserve/index.jsp</result>
+    	<result name="all">/user/reserve/all.jsp</result>
+    	<result name="suc">/user/reserve/suc.jsp</result>
+    	<result name="needchk">/user/reserve/needchk.jsp</result>
+    	<result name="success" type="json">
+               <param name="root">
+					json
+               </param>
+        </result>
+        <interceptor-ref name="defaultStack" />
+        <interceptor-ref name="json" />    	
+    </action>
+    
+    <action name="reserveMgr" class="com.hotel.action.ReserveMgrAction" method="index">
+    	<result name="index">/admin/reserve/allreserve.jsp</result>
+    	<result name="chk">/admin/reserve/chkreserve.jsp</result>
+    	<result name="serch">/admin/reserve/serchreserve.jsp</result>
+    	<result name="success">/admin/reserve/successreserve.jsp</result>
+    </action>
+    
+    <action name="userMgr" class="com.hotel.action.UserMgrAction" method="usermgr">
+    	<result name="usermgr">/admin/usermgr.jsp</result>
+    	<result name="look">/admin/userdetail.jsp</result>
+    	<result name="success" type="json">
+               <param name="root">
+					json
+               </param>
+        </result>
+        <interceptor-ref name="defaultStack" />
+        <interceptor-ref name="json" />
+    </action>
+
+ 	
+ 	
+  </package>
+  <package name="Security" namespace="/Security" extends="struts-default">
+	    <action name="SecurityCodeImageAction" 
+	    class="com.hotel.action.SecurityCodeImageAction">
+	        <result name="success" type="stream">
+	            <param name="contentType">image/jpeg</param>
+	            <param name="inputName">imageStream</param>
+	            <param name="bufferSize">2048</param>
+	        </result>
+	    </action>
+	</package>
+</struts>    

@@ -1,0 +1,10 @@
+<Context>
+    <Resource
+        name="jdbc/hotel"
+        type="javax.sql.DataSource"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/hotel"
+        username="root"
+        password="root"
+        />
+</Context>
